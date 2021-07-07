@@ -24,7 +24,7 @@ class Search:
 
 	RESULTS_LIST = ['Meal'] * 100
 
-	def __init__(self, master:object):
+	def __init__(self, master: object):
 		# spinbox value variables
 		self.meal_time_val = StringVar(value='Any')
 		self.meat_val = StringVar(value='Any')
