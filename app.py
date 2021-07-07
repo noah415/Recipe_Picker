@@ -1,11 +1,15 @@
 from tkinter import *
 from tkinter import ttk
 from notebook import *
+import pandas as pd
 
 class App(Tk):
 	INIT_WIN_SIZE = '590x300'
 
-	def __init__(self):
+	def __init__(self, df: object):
+		"""
+		@type df: pandas.DataFrame
+		"""
 		super().__init__()
 
 		# root setup

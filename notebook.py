@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from search import *
+import pandas as pd
 
 class Notebook:
 	def __init__(self, root:object):
