@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
-from search import *
+import search as s
+import new
 import database
 
 class Notebook:
@@ -9,11 +10,13 @@ class Notebook:
 		@type root: tkinter.Tk
 		@type db: Database object
 		"""
+		self.db = db
+
 		self.notebook = ttk.Notebook(root, padding=(0, 0, 0, 0))
 
-		self.search = Search(self.notebook)
+		self.search = s.Search(self.notebook)
 		self.database = ttk.Frame(self.notebook)
-		self.new = ttk.Frame(self.notebook)
+		self.new = new.New(self.notebook, self.db)
 
 		self.configure()
 
@@ -21,8 +24,7 @@ class Notebook:
 		self.notebook.grid(column=0, row=0, sticky=(N, E, W, S))
 
 		self.database.grid(column=0, row=0, sticky=(N, E, S, W))
-		self.new.grid(column=0, row=0, sticky=(N, E, S, W))
 
 		self.notebook.add(self.search.frame, text="Search")
 		self.notebook.add(self.database, text="Database")
-		self.notebook.add(self.new, text="New")
+		self.notebook.add(self.new.frame, text="New")

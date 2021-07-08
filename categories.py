@@ -19,6 +19,8 @@ class Categories:
 
 	TIME_ROW = 5
 
+	NAME_ROW = 6
+
 	def __init__(self, master: object, has_name: bool):
 		"""
 		@type master: tk object
@@ -37,6 +39,7 @@ class Categories:
 		self.to_rating_val = tk.StringVar(value='5')
 		self.type_val = tk.StringVar(value='Any')
 		self.time_val = tk.StringVar(value='Any')
+		self.name_val = tk.StringVar()
 
 		# all labels
 		self.categories_lb = ttk.Label(
@@ -87,41 +90,55 @@ class Categories:
 			font=(Categories.FONT, 14),
 			padding=(6, 5, 0, 5)
 		)
+		self.name_lb = ttk.Label(
+			self.master,
+			text='Meal Name',
+			font=(Categories.FONT, 14),
+			padding=(6, 5, 0, 5)
+		)
 
-		# spinboxes
-		self.meal_time = ttk.Spinbox(
+		# comboboxes
+		self.meal_time = ttk.Combobox(
 			self.master, 
 			values=Categories.MEAL_TIME_VALS, 
 			textvariable=self.meal_time_val
 		)
-		self.meat = ttk.Spinbox(
+		self.meat = ttk.Combobox(
 			self.master, 
 			values=Categories.MEAT_VALS, 
 			textvariable=self.meat_val
 		)
-		self.rating_from = ttk.Spinbox(
+		self.rating_from = ttk.Combobox(
 			self.master, 
 			values=Categories.RATING_VALS, 
 			textvariable=self.from_rating_val,
 			width=3
 		)
-		self.rating_to = ttk.Spinbox(
+		self.rating_to = ttk.Combobox(
 			self.master, 
 			values=Categories.RATING_VALS,
 			textvariable=self.to_rating_val,
 			width=3
 		)
-		self.type = ttk.Spinbox(
+		self.type = ttk.Combobox(
 			self.master, 
 			values=Categories.TYPE_VALS, 
 			textvariable=self.type_val
 		)
+
+		# spinbox for time
 		self.time = ttk.Spinbox(
 			self.master, 
 			from_=5,
 			to=180, 
 			increment=5,
 			textvariable=self.time_val
+		)
+
+		# entry
+		self.name_entry = ttk.Entry(
+			self.master,
+			textvariable=self.name_val
 		)
 
 		self.configure()
@@ -156,6 +173,11 @@ class Categories:
 		# configure time widget
 		self.time.grid(column=0, row=Categories.TIME_ROW, columnspan=4, sticky=(tk.W))
 		self.time_lb.grid(column=4, row=Categories.TIME_ROW, sticky=(tk.W))
+
+		# configure name widget
+		if self.has_name:
+			self.name_entry.grid(column=0, row=Categories.NAME_ROW, columnspan=4, sticky=(tk.W))
+			self.name_lb.grid(column=4, row=Categories.NAME_ROW, sticky=(tk.W))
 
 	def reset_cmd(self):
 		self.meal_time_val.set('Any')

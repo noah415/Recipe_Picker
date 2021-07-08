@@ -90,7 +90,7 @@ class Database:
 
 		new_df = pd.read_excel(xlsx_path)
 
-		self.df = pd.concat([new_df, self.df],
+		self.df = pd.concat([self.df, new_df],
 				axis=0,
 				ignore_index=True		
 		)
@@ -108,6 +108,6 @@ class Database:
 				main.DATABASE_PATH)
 		try:
 			self.backup.to_csv(main.BACKUP_PATH)
-			print("Application properly saved recent session's changes")
+			print("Application properly saved any recent session's changes")
 		except Exception:
 			print('Error: Shutdown failed to update backup changes to path', main.BACKUP_PATH)
