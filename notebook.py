@@ -1,10 +1,14 @@
 from tkinter import *
 from tkinter import ttk
 from search import *
-import pandas as pd
+import database
 
 class Notebook:
-	def __init__(self, root:object):
+	def __init__(self, root: object, db: object):
+		"""
+		@type root: tkinter.Tk
+		@type db: Database object
+		"""
 		self.notebook = ttk.Notebook(root, padding=(0, 0, 0, 0))
 
 		self.search = Search(self.notebook)

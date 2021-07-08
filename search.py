@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 import random as rand
-import pandas as pd
 
 class Search:
 	FONT = 'Ariel'

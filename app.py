@@ -1,14 +1,14 @@
 from tkinter import *
 from tkinter import ttk
 from notebook import *
-import pandas as pd
+import database
 
 class App(Tk):
 	INIT_WIN_SIZE = '590x300'
 
-	def __init__(self, df: object):
+	def __init__(self, db: object):
 		"""
-		@type df: pandas.DataFrame
+		@type db: Database object
 		"""
 		super().__init__()
 
@@ -20,4 +20,4 @@ class App(Tk):
 		self.minsize(550, 300)
 
 		# create a notebook widget
-		self.notebook = Notebook(self)
+		self.notebook = Notebook(self, db)

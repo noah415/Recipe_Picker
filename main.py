@@ -1,16 +1,20 @@
 from tkinter import *
 from tkinter import ttk
 from app import *
-from boot import boot
-import pandas as pd
+import boot
+import database
+
+DATABASE_PATH = ''
+BACKUP_PATH = ''
 
 def main():
 	# boot
-	df = boot()
+	db = boot.boot()
 
 	# Run the app
-	app = App(df)
+	app = App(db)
 	app.mainloop()
+	db.csv_update()
 
 if __name__ == "__main__":
 	main()
