@@ -46,6 +46,8 @@ class Database:
 	def delete_r(self, row: int):
 		"""
 		@type row: int
+
+		@rtype: void
 		"""
 		if NEW_SAVE:
 			self.backup = self.df.copy(deep=True)
@@ -61,6 +63,8 @@ class Database:
 	def delete_meal(self, meal: str):
 		"""
 		@type meal: str
+
+		@rtype: void
 		"""
 		if NEW_SAVE:
 			self.backup = self.df.copy(deep=True)
@@ -73,12 +77,37 @@ class Database:
 			inplace=True
 		)
 
+	def upload(self, xlsx_path: str):
+		"""
+		@type xlsx_path: str
+
+		@rtype: void
+		"""
+		if NEW_SAVE:
+			self.backup = self.df.copy(deep=True)
+
+		NEW_SAVE = True
+
+		new_df = pd.read_excel(xlsx_path)
+
+		self.df = pd.concat([new_df, self.df],
+				axis=0,
+				ignore_index=True		
+		)
+
 	def csv_update(self):
 		"""
 		This is used for when the application is shutting down
-		"""
-		print(main.DATABASE_PATH)
-		print(main.BACKUP_PATH)
 
-		self.df.to_csv(main.DATABASE_PATH)
-		self.backup.to_csv(main.BACKUP_PATH)
+		@rtype: void
+		"""
+		try:
+			self.df.to_csv(main.DATABASE_PATH)
+		except Exception:
+			print('Error: Shutdown failed to update most recent changes to path',
+				main.DATABASE_PATH)
+		try:
+			self.backup.to_csv(main.BACKUP_PATH)
+			print("Application properly saved recent session's changes")
+		except Exception:
+			print('Error: Shutdown failed to update backup changes to path', main.BACKUP_PATH)
