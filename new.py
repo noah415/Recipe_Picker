@@ -3,13 +3,14 @@ from tkinter import ttk
 from tkinter import filedialog
 import database
 import categories as cat
-import database as db
+import database
 import boot
 
 class New:
 
-	def __init__(self, master: object, db: object):
+	def __init__(self, master: object, db: object, root: object):
 		self.db = db
+		self.root = root
 		self.new_meal = [None, None, None, None, None, None, None]
 		self.frame = ttk.Frame(master, padding=(6, 0, 6, 6))
 		self.categories = cat.Categories(self.frame, True)
@@ -19,6 +20,11 @@ class New:
 			self.frame,
 			text='Select',
 			command=self.pdf_cmd
+		)
+		self.add_btn = ttk.Button(
+			self.frame,
+			text='Add',
+			command=self.add_cmd
 		)
 
 		# labels
@@ -48,3 +54,6 @@ class New:
 	def pdf_cmd(self):
 		self.new_meal[boot.PATH] = filedialog.askopenfilename()
 		print(self.new_meal[boot.PATH])
+
+	def add_cmd(self):
+		pass

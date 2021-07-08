@@ -2,6 +2,7 @@ import pandas as pd
 import main
 
 NEW_SAVE = False
+IS_EMPTY = True
 
 class Database:
 	def __init__(self, df: object, backup: object):
@@ -15,7 +16,7 @@ class Database:
 		self.backup = backup
 
 	def update(self, meal: str, meal_time: str, 
-		meat: str, rating: int, meal_type: str, time: int):
+		meat: str, rating: int, meal_type: str, time: int, path: str):
 		"""
 		@type name: str
 		@type meal_time: str
@@ -23,6 +24,7 @@ class Database:
 		@type rating: int
 		@type type: str
 		@type time: int
+		@type path: str
 
 		@rtype: void
 		"""
@@ -32,8 +34,14 @@ class Database:
 
 		NEW_SAVE = True
 
-		row = [meal, meal_time, meat, rating, meal_type, time]
+		row = [meal, meal_time, meat, rating, meal_type, time, path]
 		self.df.loc[len(df.index)] = row
+
+	def get_rows(self):
+		rows = []
+
+		if IS_EMPTY:
+			return rows
 
 	def undo(self):
 		if not NEW_SAVE:
