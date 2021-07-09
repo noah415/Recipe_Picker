@@ -16,7 +16,7 @@ class Notebook:
 
 		self.notebook = ttk.Notebook(self.root, padding=(0, 0, 0, 0))
 
-		self.search = s.Search(self.notebook)
+		self.search = s.Search(self.notebook, self.db)
 		self.database = data.Data(self.notebook, self.db)
 		self.new = new.New(self.notebook, self.db, self.root)
 

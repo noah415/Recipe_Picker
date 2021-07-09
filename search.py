@@ -1,18 +1,21 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import random as rand
 import categories as cat
+import popup
+import database
 
 class Search:
 	FONT = 'Ariel'
 
 	BUTTONS_ROW = 6
 
-	RESULTS_LIST = []
-
-	def __init__(self, master: object):
+	def __init__(self, master: object, db: object):
 		# set results list
-		self.results_val = StringVar(value=Search.RESULTS_LIST)
+		self.db = db
+		self.results_val = StringVar(value=[])
+		self.popups = []
 
 		# set frame
 		self.frame = ttk.Frame(master, padding=(6, 0, 6, 6))
@@ -44,7 +47,8 @@ class Search:
 		self.find_btn = ttk.Button(
 			self.frame,
 			text='Find',
-			style='TButton'
+			style='TButton',
+			command=self.find_cmd
 		)
 		self.more_btn = ttk.Button(
 			self.frame,
@@ -60,7 +64,8 @@ class Search:
 		self.results_lbox = Listbox(
 			self.frame,
 			height=11,
-			listvariable=self.results_val
+			listvariable=self.results_val,
+			selectmode='multiple'
 		)
 
 		# scrollbar
@@ -72,6 +77,7 @@ class Search:
 
 		# configure all the widgets
 		self.configure()
+		self.bind()
 
 	def configure(self):
 		# configure the frame
@@ -96,3 +102,36 @@ class Search:
 		self.reset_btn.grid(column=4, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
 		self.find_btn.grid(column=2, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
 		self.chooseforme_btn.grid(column=5, row=Search.BUTTONS_ROW, sticky=(E, S))
+
+	def bind(self):
+		self.results_lbox.bind('<Double-1>', self.show_popup)
+
+	def find_cmd(self):
+		filter_list = []
+		meal_time_val = self.categories.meal_time_val.get()
+		meat_val = self.categories.meat.get()
+		to_val = self.categories.to_rating_val.get()
+		from_val = self.categories.from_rating_val.get()
+		type_val = self.categories.type_val.get()
+		time_val = self.categories.time_val.get()
+
+		filter_list = [meal_time_val, meat_val, to_val, from_val, type_val, time_val]
+		
+		if (to_val != 'Any' or from_val != 'Any') and \
+			(int(to_val) - int(from_val)) < 0:
+			messagebox.showerror(title='Error', message='Invalid Rating Range')
+
+		self.results_val.set(self.db.get_filtered_res(filter_list))
+
+	def show_popup(self, *args):
+		print('popup')
+		for i in range(len(self.popups)):
+			self.popups[i].destroy()
+		self.popups = []
+
+		print(len(self.popups))
+		vals = self.db.get_rows(self.results_lbox.curselection())
+		print(vals)
+
+		for val in vals:
+			self.popups.append(popup.Popup(val))

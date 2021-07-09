@@ -5,7 +5,7 @@ import sys
 import database as db
 import main
 
-CSV_HEADER = ['Meal', 'Meal Time', 'Meat', 'Rating', 'Type', 'Time', 'Path']
+CSV_HEADER = ['Meal', 'Meal_Time', 'Meat', 'Rating', 'Type', 'Time', 'Path']
 NAME = 0
 MEAL_TIME = 1
 MEAT = 2

@@ -132,6 +132,10 @@ class Data:
 		a meal's details. Calls the Popup class to create
 		"""
 		# check how many rows are selected and put that data in a list of lists
+		for i in range(len(self.popups)):
+			self.popups[i].destroy()
+		self.popups = []
+
 		print(len(self.popups))
 		vals = self.db.get_rows(self.meals_lbox.curselection())
 		print(vals)

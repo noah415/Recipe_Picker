@@ -12,8 +12,27 @@ class Database:
 		"""
 		self.df = df
 		self.backup = backup
+		self.filtered = None
 
 		self.new_save = False
+
+	def get_filtered_res(self, filter_list: object):
+		self.filtered = self.df.copy(deep=True)
+
+		if filter_list[0] != 'Any':
+			self.filtered = self.filtered[(self.filtered.Meal_Time == filter_list[0])]
+		if filter_list[1] != 'Any':
+			self.filtered = self.filtered[(self.filtered.Meat == filter_list[1])]
+		if filter_list[2] != 'Any' and filter_list[3] != 'Any':
+			#need heelp
+			for i in range(int(filter_list[2]), (int(filter_list[3])+1)):
+				self.filtered = self.filtered[(self.filtered.Rating == i)]
+		if filter_list[4] != 'Any':
+			self.filtered = self.filtered[(self.filtered.Type == filter_list[4])]
+		if filter_list[5] != 'Any':
+			self.filtered = self.filtered[(self.filtered.Time == filter_list[5])]
+
+		return self.filtered['Meal'].tolist()
 
 	def update(self, meal: str, meal_time: str, 
 		meat: str, rating: int, meal_type: str, time: int, path: str):
@@ -36,6 +55,9 @@ class Database:
 
 		row = [meal, meal_time, meat, rating, meal_type, time, path]
 		self.df.loc[len(self.df.index)] = row
+
+		self.df.sort_values('Meal', inplace=True)
+		self.df.drop_duplicates(keep='first', inplace=True)
 
 	def get_names(self):
 		return self.df['Meal'].tolist()
@@ -124,6 +146,9 @@ class Database:
 				axis=0,
 				ignore_index=True		
 		)
+
+		self.df.sort_values('Meal', inplace=True)
+		self.df.drop_duplicates(keep='first', inplace=True)
 
 	def csv_update(self):
 		"""
