@@ -1,10 +1,8 @@
 import pandas as pd
 import main
 
-NEW_SAVE = False
-IS_EMPTY = True
-
 class Database:
+	DIFFERENT = False
 	def __init__(self, df: object, backup: object):
 		"""
 		@type df: pandas.DataFrame
@@ -14,6 +12,8 @@ class Database:
 		"""
 		self.df = df
 		self.backup = backup
+
+		self.new_save = False
 
 	def update(self, meal: str, meal_time: str, 
 		meat: str, rating: int, meal_type: str, time: int, path: str):
@@ -28,26 +28,34 @@ class Database:
 
 		@rtype: void
 		"""
-		# if there is a change to the previous database version
-		if NEW_SAVE:
-			self.backup = self.df.copy(deep=True)
+		Database.DIFFERENT = True
+		self.new_save = True
+		print(self.df.head())
 
-		NEW_SAVE = True
+		self.backup = self.df.copy(deep=True)
+
 
 		row = [meal, meal_time, meat, rating, meal_type, time, path]
-		self.df.loc[len(df.index)] = row
+		self.df.loc[len(self.df.index)] = row
+
+	def get_names(self):
+		return self.df['Meal'].tolist()
 
 	def get_rows(self):
 		rows = []
 
-		if IS_EMPTY:
+		if self.df.empty:
+			print('Database is empty on query')
 			return rows
 
+		else:
+			return self.df.values.tolist()
+
 	def undo(self):
-		if not NEW_SAVE:
+		if not self.new_save:
 			return
 		
-		NEW_SAVE = False
+		self.new_save = False
 
 		self.df = self.backup.copy(deep=True)
 
@@ -57,10 +65,10 @@ class Database:
 
 		@rtype: void
 		"""
-		if NEW_SAVE:
-			self.backup = self.df.copy(deep=True)
+		Database.DIFFERENT = True
+		self.new_save = True
 
-		NEW_SAVE = True
+		self.backup = self.df.copy(deep=True)
 
 		self.df.drop(
 			labels=[row],
@@ -74,10 +82,10 @@ class Database:
 
 		@rtype: void
 		"""
-		if NEW_SAVE:
-			self.backup = self.df.copy(deep=True)
-
-		NEW_SAVE = True
+		Database.DIFFERENT = True
+		self.new_save = True
+		
+		self.backup = self.df.copy(deep=True)
 
 		self.df.drop(
 			self.df[self.df['Meal'] != meal].index,
@@ -91,10 +99,10 @@ class Database:
 
 		@rtype: void
 		"""
-		if NEW_SAVE:
-			self.backup = self.df.copy(deep=True)
+		Database.DIFFERENT = True
+		self.new_save = True
 
-		NEW_SAVE = True
+		self.backup = self.df.copy(deep=True)
 
 		new_df = pd.read_excel(xlsx_path)
 
@@ -109,13 +117,16 @@ class Database:
 
 		@rtype: void
 		"""
+		if not Database.DIFFERENT:
+			print("Database: No changes were made to database")
+			return
 		try:
-			self.df.to_csv(main.DATABASE_PATH)
+			self.df.to_csv(main.DATABASE_PATH, index=False)
 		except Exception:
 			print('Error: Shutdown failed to update most recent changes to path',
 				main.DATABASE_PATH)
 		try:
-			self.backup.to_csv(main.BACKUP_PATH)
-			print("Application properly saved any recent session's changes")
+			self.backup.to_csv(main.BACKUP_PATH, index=False)
+			print("Database: Application properly saved any recent session's changes")
 		except Exception:
 			print('Error: Shutdown failed to update backup changes to path', main.BACKUP_PATH)

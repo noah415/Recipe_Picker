@@ -8,7 +8,7 @@ class Search:
 
 	BUTTONS_ROW = 6
 
-	RESULTS_LIST = ['Meal'] * 100
+	RESULTS_LIST = []
 
 	def __init__(self, master: object):
 		# set results list
@@ -86,14 +86,13 @@ class Search:
 
 		# configure results widget
 		self.results_lb.grid(column=5, row=0, columnspan=2, sticky=(N))
-		self.results_lbox.grid(column=5, row=1, rowspan=5, columnspan=2, sticky=(N, E, W, S))
+		self.results_lbox.grid(column=5, row=1, rowspan=5, columnspan=1, sticky=(N, E, W, S))
 		self.results_lbox.configure(yscrollcommand=self.results_scbar.set)
 		self.results_scbar.grid(column=7, row=1, rowspan=5, sticky=(N, W, S))
 		# Colorize alternating lines of the listbox https://tkdocs.com/tutorial/morewidgets.html
 
 		# configure buttons
 		self.random_btn.grid(column=0, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
-		self.reset_btn.grid(column=2, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
-		self.find_btn.grid(column=4, row=Search.BUTTONS_ROW, sticky=(W, S))
-		self.chooseforme_btn.grid(column=5, row=Search.BUTTONS_ROW, sticky=(S))
-		self.more_btn.grid(column=6, row=Search.BUTTONS_ROW, sticky=(W, S))
+		self.reset_btn.grid(column=4, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
+		self.find_btn.grid(column=2, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
+		self.chooseforme_btn.grid(column=5, row=Search.BUTTONS_ROW, sticky=(E, S))

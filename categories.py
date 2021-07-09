@@ -39,7 +39,7 @@ class Categories:
 		self.to_rating_val = tk.StringVar(value='5')
 		self.type_val = tk.StringVar(value='Any')
 		self.time_val = tk.StringVar(value='Any')
-		self.name_val = tk.StringVar()
+		self.name_val = tk.StringVar(value='')
 
 		# all labels
 		self.categories_lb = ttk.Label(
@@ -52,7 +52,7 @@ class Categories:
 			self.master,
 			text='Meal Time',
 			font=(Categories.FONT, 14),
-			padding=(6, 5, 0, 5)
+			padding=(6, 5, 10, 5)
 		)
 		self.meat_lb = ttk.Label(
 			self.master,
@@ -158,11 +158,12 @@ class Categories:
 
 		# configure the rating widget
 		self.rating_lb.grid(column=4, row=Categories.RATING_ROW, sticky=(tk.W))
-		self.from_lb.grid(column=0, row=Categories.RATING_ROW, sticky=(tk.W))
-		self.to_lb.grid(column=2, row=Categories.RATING_ROW, sticky=(tk.W))
-		self.rating_from.grid(column=1, row=Categories.RATING_ROW, sticky=(tk.E))
+		if not self.has_name:
+			self.from_lb.grid(column=0, row=Categories.RATING_ROW, sticky=(tk.W))
+			self.to_lb.grid(column=2, row=Categories.RATING_ROW, sticky=(tk.W))
+			self.rating_from.grid(column=1, row=Categories.RATING_ROW, sticky=(tk.E))
+			self.rating_from.state(['readonly'])
 		self.rating_to.grid(column=3, row=Categories.RATING_ROW, sticky=(tk.E))
-		self.rating_from.state(['readonly'])
 		self.rating_to.state(['readonly'])
 
 		# configure type widget
@@ -186,6 +187,8 @@ class Categories:
 		self.to_rating_val.set('5')
 		self.type_val.set('Any')
 		self.time_val.set('Any')
+		if self.has_name:
+			self.name_val.set(value='')
 
 	def random_cmd(self):
 		rand.seed()

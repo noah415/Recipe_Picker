@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter import filedialog
 import database
 import categories as cat
@@ -11,9 +12,9 @@ class New:
 	def __init__(self, master: object, db: object, root: object):
 		self.db = db
 		self.root = root
-		self.new_meal = [None, None, None, None, None, None, None]
 		self.frame = ttk.Frame(master, padding=(6, 0, 6, 6))
 		self.categories = cat.Categories(self.frame, True)
+		self.pdf_path = tk.StringVar(value='NULL')
 
 		# buttons
 		self.pdf_btn = ttk.Button(
@@ -25,6 +26,12 @@ class New:
 			self.frame,
 			text='Add',
 			command=self.add_cmd
+		)
+		self.reset_btn = ttk.Button(
+			self.frame,
+			text='Reset',
+			command=self.categories.reset_cmd,
+			style='TButton'
 		)
 
 		# labels
@@ -51,9 +58,24 @@ class New:
 		self.pdf_btn.grid(column=6, row=1, sticky=(tk.E))
 		self.pdf_lb.grid(column=5, row=1, sticky=(tk.E))
 
+		# configure add button
+		self.add_btn.grid(column=6, row=6, sticky=(tk.S, tk.E))
+
+		# configure reset button
+		self.reset_btn.grid(column=6, row=5, sticky=(tk.E, tk.S))
+
 	def pdf_cmd(self):
-		self.new_meal[boot.PATH] = filedialog.askopenfilename()
-		print(self.new_meal[boot.PATH])
+		self.pdf_path.set(value=filedialog.askopenfilename())
 
 	def add_cmd(self):
-		pass
+		if self.categories.meal_time_val.get() == 'Any' or \
+			self.categories.meat_val.get() == 'Any' or \
+			self.categories.type_val.get() == 'Any' or \
+			self.categories.name_val.get() == '':
+			messagebox.showerror(title='Error', message='Invalid Attribute')
+			return
+		
+		self.db.update(self.categories.name_val.get(), self.categories.meal_time_val.get(),
+			self.categories.meat_val.get(), self.categories.to_rating_val.get(),
+			self.categories.type_val.get(), self.categories.time_val.get(),
+			self.pdf_path.get())
