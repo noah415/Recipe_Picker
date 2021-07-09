@@ -1,8 +1,8 @@
 import pandas as pd
 import main
+from tkinter import messagebox
 
 class Database:
-	DIFFERENT = False
 	def __init__(self, df: object, backup: object):
 		"""
 		@type df: pandas.DataFrame
@@ -28,7 +28,6 @@ class Database:
 
 		@rtype: void
 		"""
-		Database.DIFFERENT = True
 		self.new_save = True
 		print(self.df.head())
 
@@ -41,15 +40,19 @@ class Database:
 	def get_names(self):
 		return self.df['Meal'].tolist()
 
-	def get_rows(self):
+	def get_rows(self, r_nums: object = None):
 		rows = []
 
 		if self.df.empty:
 			print('Database is empty on query')
 			return rows
-
-		else:
+		elif r_nums is None:
 			return self.df.values.tolist()
+		else:
+			for num in r_nums:
+				rows.append(self.df.iloc[num].tolist())
+
+		return rows
 
 	def undo(self):
 		if not self.new_save:
@@ -58,23 +61,25 @@ class Database:
 		self.new_save = False
 
 		self.df = self.backup.copy(deep=True)
+		self.df.reset_index(drop=True, inplace=True)
+		print(self.df.index)
 
-	def delete_r(self, row: int):
+	def delete_r(self, rows: int):
 		"""
 		@type row: int
 
 		@rtype: void
 		"""
-		Database.DIFFERENT = True
 		self.new_save = True
-
 		self.backup = self.df.copy(deep=True)
 
 		self.df.drop(
-			labels=[row],
+			labels=rows,
 			axis=0,
 			inplace=True
 		)
+
+		self.df.reset_index(drop=True, inplace=True)
 
 	def delete_meal(self, meal: str):
 		"""
@@ -82,7 +87,6 @@ class Database:
 
 		@rtype: void
 		"""
-		Database.DIFFERENT = True
 		self.new_save = True
 		
 		self.backup = self.df.copy(deep=True)
@@ -93,19 +97,29 @@ class Database:
 			inplace=True
 		)
 
-	def upload(self, xlsx_path: str):
+	def upload(self, xlsx_path: str, col_names: object, name_table: object):
 		"""
 		@type xlsx_path: str
 
+		@type col_names: list of str
+		@type name_table: dictionary 
+
 		@rtype: void
 		"""
-		Database.DIFFERENT = True
 		self.new_save = True
 
 		self.backup = self.df.copy(deep=True)
 
-		new_df = pd.read_excel(xlsx_path)
+		try:
+			new_df = pd.read_excel(xlsx_path, usecols=col_names)
+		except Exception as e:
+			messagebox.showerror(title='Error', message='Column Name Does Not Match.\n' + str(e))
+			return
 
+		for name in col_names:
+			new_df = new_df.rename(columns={name: name_table[name]})
+			print('renamed', name, 'to', name_table[name])
+		
 		self.df = pd.concat([self.df, new_df],
 				axis=0,
 				ignore_index=True		
@@ -117,7 +131,7 @@ class Database:
 
 		@rtype: void
 		"""
-		if not Database.DIFFERENT:
+		if not self.new_save:
 			print("Database: No changes were made to database")
 			return
 		try:

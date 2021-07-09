@@ -11,7 +11,7 @@ class Categories:
 	MEAT_VALS = ('Any', 'Chicken', 'Pork', 'Beef', 'Fish/Seafood', 'Veggie', 'Other')
 	MEAT_ROW = 2
 
-	RATING_VALS = ('0', '1', '2', '3', '4', '5')
+	RATING_VALS = ('0', '1', '2', '3', '4', '5', 'None')
 	RATING_ROW = 3
 	
 	TYPE_VALS = ('Any', 'Asian', 'Mexican', 'American', 'Italian', 'Other')
@@ -21,7 +21,7 @@ class Categories:
 
 	NAME_ROW = 6
 
-	def __init__(self, master: object, has_name: bool):
+	def __init__(self, master: object, has_name: bool, cats: object = None):
 		"""
 		@type master: tk object
 
@@ -32,19 +32,36 @@ class Categories:
 		"""
 		self.master = master
 		self.has_name = has_name
-		# spinbox value variables
-		self.meal_time_val = tk.StringVar(value='Any')
-		self.meat_val = tk.StringVar(value='Any')
-		self.from_rating_val = tk.StringVar(value='0')
-		self.to_rating_val = tk.StringVar(value='5')
-		self.type_val = tk.StringVar(value='Any')
-		self.time_val = tk.StringVar(value='Any')
+		self.cats = cats
+		self.restrict = False
+		# spinbox value variables and default values
+		if self.cats is None:
+			self.meal_time_val = tk.StringVar(value='Any')
+			self.meat_val = tk.StringVar(value='Any')
+			self.from_rating_val = tk.StringVar(value='0')
+			self.to_rating_val = tk.StringVar(value='5')
+			self.type_val = tk.StringVar(value='Any')
+			self.time_val = tk.StringVar(value='Any')
+		else:
+			self.meal_time_val = tk.StringVar(value=self.cats[1])
+			self.meat_val = tk.StringVar(value=self.cats[2])
+			self.from_rating_val = tk.StringVar(value='')
+			self.to_rating_val = tk.StringVar(value=str(self.cats[3]))
+			self.type_val = tk.StringVar(value=self.cats[4])
+			self.time_val = tk.StringVar(value=self.cats[5])
+
 		self.name_val = tk.StringVar(value='')
+
+		if self.cats is None:
+			self.categories_name = 'Categories'
+		else:
+			self.categories_name = self.cats[0]
+			self.restrict = True
 
 		# all labels
 		self.categories_lb = ttk.Label(
 			self.master, 
-			text='Categories', 
+			text=self.categories_name, 
 			font=(Categories.FONT, 18),
 			padding=(0, 3, 3, 6)
 		)
@@ -158,7 +175,7 @@ class Categories:
 
 		# configure the rating widget
 		self.rating_lb.grid(column=4, row=Categories.RATING_ROW, sticky=(tk.W))
-		if not self.has_name:
+		if not self.has_name and self.cats is None:
 			self.from_lb.grid(column=0, row=Categories.RATING_ROW, sticky=(tk.W))
 			self.to_lb.grid(column=2, row=Categories.RATING_ROW, sticky=(tk.W))
 			self.rating_from.grid(column=1, row=Categories.RATING_ROW, sticky=(tk.E))

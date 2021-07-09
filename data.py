@@ -3,6 +3,7 @@ from tkinter import ttk
 import database
 import categories as cat
 import popup
+import excel_popup as excel
 
 class Data:
 	CUR_ROWS = []
@@ -12,7 +13,8 @@ class Data:
 		self.db = db
 		self.meals_vals = tk.StringVar()
 		self.refresh()
-		self.popup = None
+		self.popups = []
+		self.excel_pop = None
 
 		# buttons
 		self.excel_upload_btn = ttk.Button(
@@ -35,6 +37,11 @@ class Data:
 			text='Undo',
 			command=self.undo
 		)
+		self.open_btn = ttk.Button(
+			self.frame,
+			text='Open',
+			command=self.show_popup
+		)
 
 		# labels
 		self.meals_lb = ttk.Label(
@@ -54,7 +61,8 @@ class Data:
 		self.meals_lbox = tk.Listbox(
 			self.frame,
 			height=11,
-			listvariable=self.meals_vals
+			listvariable=self.meals_vals,
+			selectmode='multiple'
 		)
 
 		# scrollbar
@@ -77,41 +85,72 @@ class Data:
 		# configure excel widget
 		self.excel_upload_btn.grid(column=3, row=0, sticky=(tk.N))
 		self.excel_lb.grid(column=2, row=0, sticky=(tk.W))
-		self.refresh_btn.grid(column=3, row=1, sticky=(tk.S))
-		self.undo_btn.grid(column=3, row=2, sticky=(tk.S))
-		self.delete_btn.grid(column=3, row=3, sticky=(tk.S))
+		self.refresh_btn.grid(column=3, row=2, sticky=(tk.S))
+		self.undo_btn.grid(column=3, row=3, sticky=(tk.S))
+		self.delete_btn.grid(column=3, row=4, sticky=(tk.S))
+		self.open_btn.grid(column=3, row=1, sticky=(tk.S))
 
 		# configure database widget
-		self.meals_lbox.grid(column=0, row=1, rowspan=4, sticky=(tk.N, tk.E, tk.W, tk.S))
+		self.meals_lbox.grid(column=0, row=1, rowspan=5, sticky=(tk.N, tk.E, tk.W, tk.S))
 		self.meals_lbox.configure(yscrollcommand=self.meals_scbar.set)
-		self.meals_scbar.grid(column=1, row=1, rowspan=3, sticky=(tk.N, tk.W, tk.S))
+		self.meals_scbar.grid(column=1, row=1, rowspan=4, sticky=(tk.N, tk.W, tk.S))
 
 	def bind(self):
+		"""
+		Configures all of the key and environment bindings
+		"""
 		self.meals_lbox.bind('<Double-1>', self.show_popup)
 
 	def upload_excel(self):
 		print('upload')
+		self.excel_pop = excel.Excel_popup(self.db, self)
 
 	def refresh(self):
 		print('im refreshing...')
 		self.meals_vals.set(value=self.db.get_names())
 
 	def conv_rowtostr(self):
+		"""
+		grabs a list of lists of row attributes from database and 
+		makes a list of row strings to return
+
+		@rtype: list of strings
+		"""
 		lst = self.db.get_rows()
 		ret = []
 
 		for row in lst:
 			row = [str(i) for i in row]
-			string = ',      '.join(row)
+			string = ', '.join(row)
 			ret.append(string)
 
 		return ret
 
 	def show_popup(self, *args):
-		self.popup = popup.Popup([0])
+		"""
+		Used in the meals_lbox bind to mouse double click to show
+		a meal's details. Calls the Popup class to create
+		"""
+		# check how many rows are selected and put that data in a list of lists
+		print(len(self.popups))
+		vals = self.db.get_rows(self.meals_lbox.curselection())
+		print(vals)
+
+		for val in vals:
+			self.popups.append(popup.Popup(val))
+			#disable the opend meals
 
 	def delete(self):
-		pass
+		rows = self.meals_lbox.curselection()
+		print('data: deleted rows:', list(rows))
+
+		self.db.delete_r(list(rows))
+
+		self.refresh()
+
+
 
 	def undo(self):
-		pass
+		print("undo")
+		self.db.undo()
+		self.refresh()
