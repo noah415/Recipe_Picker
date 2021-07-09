@@ -180,7 +180,7 @@ class Categories:
 			self.to_lb.grid(column=2, row=Categories.RATING_ROW, sticky=(tk.W))
 			self.rating_from.grid(column=1, row=Categories.RATING_ROW, sticky=(tk.E))
 			self.rating_from.state(['readonly'])
-		self.rating_to.grid(column=3, row=Categories.RATING_ROW, sticky=(tk.E))
+		self.rating_to.grid(column=3, row=Categories.RATING_ROW, sticky=(tk.W))
 		self.rating_to.state(['readonly'])
 
 		# configure type widget
@@ -216,3 +216,6 @@ class Categories:
 		self.meal_time_val.set(Categories.MEAL_TIME_VALS[mealtime_index])
 		self.meat_val.set(Categories.MEAT_VALS[meat_index])
 		self.type_val.set(Categories.TYPE_VALS[type_index])
+
+	def set_inputcats(self):
+		pass

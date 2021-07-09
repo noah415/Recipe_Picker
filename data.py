@@ -141,7 +141,7 @@ class Data:
 		print(vals)
 
 		for val in vals:
-			self.popups.append(popup.Popup(val))
+			self.popups.append(popup.Popup(val, self.db))
 			#disable the opend meals
 
 	def delete(self):

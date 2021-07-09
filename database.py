@@ -113,11 +113,7 @@ class Database:
 		
 		self.backup = self.df.copy(deep=True)
 
-		self.df.drop(
-			self.df[self.df['Meal'] != meal].index,
-			axis=1,
-			inplace=True
-		)
+		self.df = self.df[(self.df.Meal != meal)]
 
 	def upload(self, xlsx_path: str, col_names: object, name_table: object):
 		"""
