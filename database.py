@@ -75,6 +75,20 @@ class Database:
 				rows.append(self.df.iloc[num].tolist())
 
 		return rows
+	
+	def get_filtered_rows(self, r_nums: object = None):
+		rows = []
+
+		if self.filtered.empty:
+			print('Database is empty on query')
+			return rows
+		elif r_nums is None:
+			return self.df.values.tolist()
+		else:
+			for num in r_nums:
+				rows.append(self.df.iloc[num].tolist())
+
+		return rows
 
 	def undo(self):
 		if not self.new_save:
@@ -115,7 +129,7 @@ class Database:
 
 		self.df = self.df[(self.df.Meal != meal)]
 
-	def upload(self, xlsx_path: str, col_names: object, name_table: object):
+	def upload(self, xlsx_path: str, col_names: object, name_table: object, sheet_index: str):
 		"""
 		@type xlsx_path: str
 
@@ -129,7 +143,7 @@ class Database:
 		self.backup = self.df.copy(deep=True)
 
 		try:
-			new_df = pd.read_excel(xlsx_path, usecols=col_names)
+			new_df = pd.read_excel(xlsx_path, usecols=col_names, sheet_name=int(sheet_index))
 		except Exception as e:
 			messagebox.showerror(title='Error', message='Column Name Does Not Match.\n' + str(e))
 			return

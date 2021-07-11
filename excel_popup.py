@@ -34,6 +34,7 @@ class Excel_popup:
 		self.type_val = tk.StringVar(value='')
 		self.time_val = tk.StringVar(value='')
 		self.name_val = tk.StringVar(value='')
+		self.sheet_val = tk.StringVar(value='')
 		
 		# all labels
 		self.main_lb = ttk.Label(
@@ -84,6 +85,12 @@ class Excel_popup:
 			font=(Excel_popup.FONT, 10),
 			padding=(6, 5, 0, 0)
 		)
+		self.sheet_lb = ttk.Label(
+			self.frame,
+			text='Sheet Index',
+			font=(Excel_popup.FONT, 14),
+			padding=(6, 5, 0, 5)
+		)
 
 		# buttons
 		self.select_btn = ttk.Button(
@@ -122,6 +129,10 @@ class Excel_popup:
 			self.frame,
 			textvariable=self.name_val
 		)
+		self.sheet = ttk.Entry(
+			self.frame,
+			textvariable=self.sheet_val
+		)
 
 		self.configure()
 
@@ -144,6 +155,8 @@ class Excel_popup:
 		self.select_btn.grid(column=2, row=5)
 		self.select_lb.grid(column=2, row=4, sticky=(tk.S))
 		self.upload_btn.grid(column=2, row=6)
+		self.sheet.grid(column=0, row=7)
+		self.sheet_lb.grid(column=1, row=7)
 
 	def select_cmd(self):
 		self.excel_path = filedialog.askopenfilename()
@@ -163,13 +176,13 @@ class Excel_popup:
 				self.name_table[inputs[i]] = boot.CSV_HEADER[i]
 				self.col_names.append(inputs[i])
 
-		self.db.upload(self.excel_path, self.col_names, self.name_table)
+		self.db.upload(self.excel_path, self.col_names, self.name_table, self.sheet.get())
 		self.datawindow.refresh()
 		self.window.destroy()
 
 
 	def check_entries(self):
-		if self.name.get() == '' or self.excel_path == '':
+		if self.name.get() == '' or self.excel_path == '' or self.sheet_val.get() == '':
 			messagebox.showerror(title='Error', message='Invalid Attribute')
 			return False
 		return True

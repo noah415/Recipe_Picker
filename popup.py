@@ -13,8 +13,8 @@ class Popup:
 		self.frame = ttk.Frame(self.window)
 		self.categories = cat.Categories(self.frame, False, self.meal)
 		self.path = meal[6]
-		if self.path != '':
-			self.pdf_path = tk.StringVar(value=os.path.basename(self.path))
+		""" 		if not self.path is None or self.path != '':
+			self.pdf_path = tk.StringVar(value=os.path.basename(self.path))"""
 		self.pdf_path = tk.StringVar(value=self.path)
 
 		self.txt_box = tk.Text(

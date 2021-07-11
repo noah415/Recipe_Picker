@@ -58,6 +58,7 @@ class Search:
 		self.chooseforme_btn = ttk.Button(
 			self.frame,
 			text='Choose For Me'
+			#TODO: set me up
 		)
 
 		# listbox
@@ -124,6 +125,9 @@ class Search:
 		self.results_val.set(self.db.get_filtered_res(filter_list))
 
 	def show_popup(self, *args):
+		"""
+		TODO: make vals a list of rows to be opened from db not from the results_lbox
+		"""
 		print('popup')
 		for i in range(len(self.popups)):
 			self.popups[i].destroy()
