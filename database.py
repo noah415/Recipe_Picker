@@ -82,8 +82,8 @@ class Database:
 	def get_filtered_rows(self, r_nums: object = None):
 		rows = []
 
-		if self.filtered.empty:
-			print('Database is empty on query')
+		if self.filtered is None:
+			print('Filtered Database is empty on query')
 			return rows
 		elif r_nums is None:
 			return self.filtered.values.tolist()
@@ -137,12 +137,13 @@ class Database:
 		self.df.reset_index(drop=True, inplace=True)
 		self.filtered = self.df.copy(deep=True)
 
-	def upload(self, xlsx_path: str, col_names: object, name_table: object, sheet_index: str):
+	def upload(self, xlsx_path: str, col_names: object, name_table: object, sheet_index: int):
 		"""
-		@type xlsx_path: str
+		@param xlsx_path: str
 
-		@type col_names: list of str
-		@type name_table: dictionary 
+		@param col_names: list of str
+		@param name_table: dictionary 
+		@param sheet_index: int
 
 		@rtype: void
 		"""
@@ -151,7 +152,7 @@ class Database:
 		self.backup = self.df.copy(deep=True)
 
 		try:
-			new_df = pd.read_excel(xlsx_path, usecols=col_names, sheet_name=int(sheet_index))
+			new_df = pd.read_excel(xlsx_path, usecols=col_names, sheet_name=sheet_index-1)
 		except Exception as e:
 			messagebox.showerror(title='Error', message='Column Name Does Not Match.\n' + str(e))
 			return

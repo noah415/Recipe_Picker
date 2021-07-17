@@ -87,7 +87,7 @@ class Excel_popup:
 		)
 		self.sheet_lb = ttk.Label(
 			self.frame,
-			text='Sheet Index',
+			text='Sheet Number',
 			font=(Excel_popup.FONT, 14),
 			padding=(6, 5, 0, 5)
 		)
@@ -176,7 +176,7 @@ class Excel_popup:
 				self.name_table[inputs[i]] = boot.CSV_HEADER[i]
 				self.col_names.append(inputs[i])
 
-		self.db.upload(self.excel_path, self.col_names, self.name_table, self.sheet.get())
+		self.db.upload(self.excel_path, self.col_names, self.name_table, int(self.sheet.get()))
 		self.datawindow.refresh()
 		self.window.destroy()
 

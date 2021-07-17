@@ -57,8 +57,13 @@ class Search:
 		)
 		self.chooseforme_btn = ttk.Button(
 			self.frame,
-			text='Choose For Me'
-			#TODO: set me up
+			text='Choose For Me',
+			command=self.choose_cmd
+		)
+		self.open_btn = ttk.Button(
+			self.frame,
+			text='Open',
+			command=self.show_popup
 		)
 
 		# listbox
@@ -93,7 +98,7 @@ class Search:
 
 		# configure results widget
 		self.results_lb.grid(column=5, row=0, columnspan=2, sticky=(N))
-		self.results_lbox.grid(column=5, row=1, rowspan=5, columnspan=1, sticky=(N, E, W, S))
+		self.results_lbox.grid(column=5, row=1, rowspan=5, columnspan=2, sticky=(N, E, W, S))
 		self.results_lbox.configure(yscrollcommand=self.results_scbar.set)
 		self.results_scbar.grid(column=7, row=1, rowspan=5, sticky=(N, W, S))
 		# Colorize alternating lines of the listbox https://tkdocs.com/tutorial/morewidgets.html
@@ -102,7 +107,8 @@ class Search:
 		self.random_btn.grid(column=0, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
 		self.reset_btn.grid(column=4, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
 		self.find_btn.grid(column=2, row=Search.BUTTONS_ROW, columnspan=2, sticky=(W, S))
-		self.chooseforme_btn.grid(column=5, row=Search.BUTTONS_ROW, sticky=(E, S))
+		self.open_btn.grid(column=5, row=Search.BUTTONS_ROW)
+		self.chooseforme_btn.grid(column=6, row=Search.BUTTONS_ROW, sticky=(E, S))
 
 	def bind(self):
 		self.results_lbox.bind('<Double-1>', self.show_popup)
@@ -136,6 +142,22 @@ class Search:
 		print(len(self.popups))
 		vals = self.db.get_filtered_rows(self.results_lbox.curselection())
 		print(vals)
+		if vals == []:
+			return
 
 		for val in vals:
 			self.popups.append(popup.Popup(val, self.db))
+
+	def choose_cmd(self):
+		for i in range(len(self.popups)):
+			self.popups[i].destroy()
+		self.popups = []
+
+		vals = self.db.get_filtered_rows()
+		if vals == []:
+			return
+
+		row = vals[rand.randint(0, len(vals))]
+		print(row)
+
+		self.popups.append(popup.Popup(row, self.db))

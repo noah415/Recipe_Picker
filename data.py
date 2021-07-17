@@ -139,6 +139,8 @@ class Data:
 		print(len(self.popups))
 		vals = self.db.get_rows(self.meals_lbox.curselection())
 		print(vals)
+		if vals == []:
+			return
 
 		for val in vals:
 			self.popups.append(popup.Popup(val, self.db))
