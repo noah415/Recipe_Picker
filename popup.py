@@ -4,6 +4,7 @@ from tkinter import filedialog
 import categories as cat
 import database
 import os
+import pdf_reader as pdf
 
 class Popup:
 	def __init__(self, meal: object, db: object):
@@ -16,6 +17,10 @@ class Popup:
 		""" 		if not self.path is None or self.path != '':
 			self.pdf_path = tk.StringVar(value=os.path.basename(self.path))"""
 		self.pdf_path = tk.StringVar(value=self.path)
+		try:
+			self.pdf_base_path = tk.StringVar(value=os.path.basename(self.path))
+		except Exception:
+			self.pdf_base_path = tk.StringVar(value='Empty')
 
 		self.txt_box = tk.Text(
 			self.frame,
@@ -34,14 +39,21 @@ class Popup:
 			text='Save',
 			command=self.save_cmd
 		)
-		self.pdf_btn = ttk.Button(
+		self.pdf_select_btn = ttk.Button(
 			self.frame,
-			text='Select pdf',
+			text='Select PDF',
 			command=self.pdf_cmd
 		)
-		self.pdf_lb = ttk.Label(
+		self.pdf_val_lb = ttk.Label(
 			self.frame,
-			textvariable=self.pdf_path
+			textvariable=self.pdf_base_path,
+			width=20,
+			padding=(0, 0, 6, 0)
+		)
+		self.pdf_open_btn = ttk.Button(
+			self.frame,
+			command=self.open_pdf,
+			text='Open PDF'
 		)
 
 		self.disable_categories()
@@ -50,11 +62,12 @@ class Popup:
 	def configure(self):
 		self.frame.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
 
-		self.edit_btn.grid(column=5, row=4)
-		self.save_btn.grid(column=5, row=6)
-		self.pdf_btn.grid(column=5, row=5)
+		self.edit_btn.grid(column=5, row=0, sticky=(tk.W, tk.E))
+		self.pdf_select_btn.grid(column=5, row=1)
+		self.save_btn.grid(column=5, row=2, sticky=(tk.W, tk.E))
 
-		self.pdf_lb.grid(column=0, row=6, columnspan=4)
+		self.pdf_val_lb.grid(column=0, row=6, columnspan=4)
+		self.pdf_open_btn.grid(column=4, row=6)
 
 	def destroy(self):
 		self.window.destroy()
@@ -65,7 +78,7 @@ class Popup:
 		self.categories.rating_to['state'] = 'disabled'
 		self.categories.type['state'] = 'disabled'
 		self.categories.time['state'] = 'disabled'
-		self.pdf_btn['state'] = 'disabled'
+		self.pdf_select_btn['state'] = 'disabled'
 		self.save_btn['state'] = 'disabled'
 
 	def enable_categories(self):
@@ -74,7 +87,7 @@ class Popup:
 		self.categories.rating_to['state'] = 'enable'
 		self.categories.type['state'] = 'enable'
 		self.categories.time['state'] = 'enable'
-		self.pdf_btn['state'] = 'enable'
+		self.pdf_select_btn['state'] = 'enable'
 		self.save_btn['state'] = 'enable'
 
 	def save_cmd(self):
@@ -86,7 +99,11 @@ class Popup:
 
 	def pdf_cmd(self):
 		self.path = filedialog.askopenfilename()
-		self.pdf_path.set(value=os.path.basename(self.path))
-		self.pdf_btn['state'] = 'disabled'
-		print('opened pdf', self.path)
+		self.pdf_path.set(value=self.path)
+		self.pdf_select_btn['state'] = 'disabled'
+	
+	def open_pdf(self):
+		if self.pdf_base_path != 'Empty':
+			pdf.open_pdf(self.path)
+			print('opened pdf', self.path)
 

@@ -57,7 +57,10 @@ class Database:
 		self.df.loc[len(self.df.index)] = row
 
 		self.df.sort_values('Meal', inplace=True)
-		self.df.drop_duplicates(keep='first', inplace=True)
+		self.df.drop_duplicates(subset='Meal', keep='first', inplace=True)
+
+		self.df.reset_index(drop=True, inplace=True)
+		self.filtered = self.df.copy(deep=True)
 
 	def get_names(self):
 		return self.df['Meal'].tolist()
@@ -83,10 +86,10 @@ class Database:
 			print('Database is empty on query')
 			return rows
 		elif r_nums is None:
-			return self.df.values.tolist()
+			return self.filtered.values.tolist()
 		else:
 			for num in r_nums:
-				rows.append(self.df.iloc[num].tolist())
+				rows.append(self.filtered.iloc[num].tolist())
 
 		return rows
 
@@ -99,6 +102,7 @@ class Database:
 		self.df = self.backup.copy(deep=True)
 		self.df.reset_index(drop=True, inplace=True)
 		print(self.df.index)
+		self.filtered = self.df.copy(deep=True)
 
 	def delete_r(self, rows: int):
 		"""
@@ -116,6 +120,7 @@ class Database:
 		)
 
 		self.df.reset_index(drop=True, inplace=True)
+		self.filtered = self.df.copy(deep=True)
 
 	def delete_meal(self, meal: str):
 		"""
@@ -128,6 +133,9 @@ class Database:
 		self.backup = self.df.copy(deep=True)
 
 		self.df = self.df[(self.df.Meal != meal)]
+
+		self.df.reset_index(drop=True, inplace=True)
+		self.filtered = self.df.copy(deep=True)
 
 	def upload(self, xlsx_path: str, col_names: object, name_table: object, sheet_index: str):
 		"""
@@ -158,7 +166,8 @@ class Database:
 		)
 
 		self.df.sort_values('Meal', inplace=True)
-		self.df.drop_duplicates(keep='first', inplace=True)
+		self.df.drop_duplicates(subset='Meal', keep='first', inplace=True)
+		self.filtered = self.df.copy(deep=True)
 
 	def csv_update(self):
 		"""

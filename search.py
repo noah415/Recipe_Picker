@@ -134,7 +134,7 @@ class Search:
 		self.popups = []
 
 		print(len(self.popups))
-		vals = self.db.get_rows(self.results_lbox.curselection())
+		vals = self.db.get_filtered_rows(self.results_lbox.curselection())
 		print(vals)
 
 		for val in vals:

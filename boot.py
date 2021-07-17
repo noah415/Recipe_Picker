@@ -4,6 +4,7 @@ import csv
 import sys
 import database as db
 import main
+import platform
 
 CSV_HEADER = ['Meal', 'Meal_Time', 'Meat', 'Rating', 'Type', 'Time', 'Path']
 NAME = 0
@@ -13,12 +14,20 @@ RATING = 3
 TYPE = 4
 TIME = 5
 PATH = 6
+MACOS = 'Darwin'
+WINDOWS = 'Windows'
+PDF_CMD = ''
 
 def boot():
 	"""
 	@rtype: object
 	@return: Returns a Database object
 	"""
+	global PDF_CMD
+
+	set_pdf_cmd()
+	print('boot: set pdf command to', PDF_CMD)
+
 	# get Documents path: https://yagisanatode.com/2018/03/10/how-to-check-a-users-home-directory-for-a-folder-python-3/ 
 	home = os.path.expanduser('~')
 	doc_path = os.path.join(home, 'Documents')
@@ -89,3 +98,12 @@ def check_file(f_path: str):
 			sys.exit()
 	else:
 		print("check_file: data file exists")
+
+def set_pdf_cmd():
+	global PDF_CMD
+	system = platform.system()
+
+	if system == MACOS:
+		PDF_CMD = 'open'
+	elif system == WINDOWS:
+		PDF_CMD = 'start'
