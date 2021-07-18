@@ -101,6 +101,11 @@ class Popup:
 		self.path = filedialog.askopenfilename()
 		self.pdf_path.set(value=self.path)
 		self.pdf_select_btn['state'] = 'disabled'
+		print(self.path)
+		try:
+			self.pdf_base_path.set(value=os.path.basename(self.path))
+		except Exception:
+			self.pdf_base_path.set(value='Empty')
 	
 	def open_pdf(self):
 		if self.pdf_base_path != 'Empty':

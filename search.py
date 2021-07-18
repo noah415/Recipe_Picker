@@ -157,7 +157,7 @@ class Search:
 		if vals == []:
 			return
 
-		row = vals[rand.randint(0, len(vals))]
+		row = vals[rand.randint(0, len(vals)-1)]
 		print(row)
 
 		self.popups.append(popup.Popup(row, self.db))
